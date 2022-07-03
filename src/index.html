@@ -2,25 +2,63 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-utf8">
-    <title>Sonic 2 en HTML5</title>
+  <style>
+    @font-face {
+      font-family: 'sega';
+      src: url('resources/font/NiseSegaSonic.TTF') format("truetype");
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      flex-wrap: wrap;
+      font-family: sega;
+      background-color: #0020e0;
+    }
+
+    #joyDiv {
+      position: absolute;
+      bottom: max(80px, calc(50% - 100px));
+      left: max(30px, 20% - 100px);
+      width: 200px;
+      height: 200px;
+    }
+
+    @media screen and (orientation: portrait) {
+      #joyDiv {
+        bottom: max(80px, calc(25% - 100px));
+        left: calc(50% - 100px);
+      }
+    }
+
+    @media screen and (pointer: fine) {
+      #joyDiv {
+        visibility: hidden;
+      }
+    }
+  </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-utf8">
+  <title>Sonic Bubu Edition</title>
 </head>
 
 <body>
-    <canvas id="game" width="320" height="240"></canvas>
+  <canvas id="game" width="320" height="240"> Seu dispositivo é incompatível </canvas>
+  <div id="joyDiv" />
 
-    <p>Fonctionne sous Firefox et Chrome, branchez une manette en usb pour que cela fonctionne.</p>
-
-    <script src="resources.js"></script>
-    <script src="gamepad.js"></script>
-    <script src="background.js"></script>
-    <script src="title_screen.js"></script>
-    <script src="level.js"></script>
-    <script src="rings.js"></script>
-    <script src="physics.js"></script>
-    <script src="sonic.js"></script>
-    <script src="audio.js"></script>
-    <script src="game.js"></script>
+  <script src="resources.js"></script>
+  <script src="gamepad.js"></script>
+  <script src="background.js"></script>
+  <script src="title_screen.js"></script>
+  <script src="level.js"></script>
+  <script src="rings.js"></script>
+  <script src="the_ring.js"></script>
+  <script src="physics.js"></script>
+  <script src="sonic.js"></script>
+  <script src="audio.js"></script>
+  <script src="joy.min.js"></script>
+  <script src="game.js"></script>
 
 </body>
 

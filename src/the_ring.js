@@ -1,4 +1,4 @@
-function Rings() {
+function Ring() {
 
   // Position de l'animation courante parmi les frames
   this.currentAnimationFrame = 0;
@@ -15,11 +15,14 @@ function Rings() {
 }
 
 
-Rings.prototype.drawRing = function(context, x, y) {
+Ring.prototype.drawRing = function(context, x, y) {
+  context.save();
+  context.filter = "grayscale(1)";
   context.drawImage(resources.images['ring'], this.currentAnimationFrame * this.animationFrameWidth, 0, 16, 16, x, y, 16, 16);
+  context.restore();
 };
 
-Rings.prototype.animate = function() {
+Ring.prototype.animate = function() {
 
   this.currentAnimationFrame += 1;
   if (this.currentAnimationFrame == this.totalFrames) {
