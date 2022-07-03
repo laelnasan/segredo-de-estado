@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    @font-face {
+      font-family: 'sega';
+      src: url('../src/resources/font/NiseSegaSonic.TTF') format("truetype");
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      flex-wrap: wrap;
+      font-family: sega;
+      background-color: #0020e0;
+    }
+
+    #joyDiv {
+      position: absolute;
+      bottom: max(80px, calc(50% - 100px));
+      left: max(30px, 20% - 100px);
+      width: 200px;
+      height: 200px;
+    }
+
+    @media screen and (orientation: portrait) {
+      #joyDiv {
+        bottom: max(80px, calc(25% - 100px));
+        left: calc(50% - 100px);
+      }
+    }
+
+    @media screen and (pointer: fine) {
+      #joyDiv {
+        visibility: hidden;
+      }
+    }
+  </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-utf8">
+  <title>Sonic Bubu Edition</title>
+</head>
+
+<body>
+  <canvas id="game" width="320" height="240"> Seu dispositivo é incompatível </canvas>
+  <div id="joyDiv" />
+
+  <script src="../src/resources.js"></script>
+  <script src="../src/gamepad.js"></script>
+  <script src="../src/background.js"></script>
+  <script src="../src/title_screen.js"></script>
+  <script src="../src/level.js"></script>
+  <script src="../src/rings.js"></script>
+  <script src="../src/the_ring.js"></script>
+  <script src="physics.js"></script>
+  <script src="sonic.js"></script>
+  <script src="audio.js"></script>
+  <script src="joy.min.js"></script>
+  <script src="game.js"></script>
+
+</body>
+
+</html>
