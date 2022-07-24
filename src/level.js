@@ -1,5 +1,5 @@
-function Level() {
-  this.nbTotalTilesX = 78;
+function Level(map) {
+  this.nbTotalTilesX = 512;
   this.nbTotalTilesY = 18;
 
   this.tileSize = 16;
@@ -7,65 +7,15 @@ function Level() {
   this.tilesDisplayX = 20;
   this.tilesDisplayY = 15;
 
-  this.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 210, 212, 213, 0, 0, 0, 0, 210, 212, 213, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 210, 212, 213, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 207, 208, 209, 0, 0, 0, 0, 207, 208, 209, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 207, 208, 209, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 202, 203, 204, 205, 0, 0, 0, 202, 203, 204, 205, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 202, 203, 204, 205, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 198, 199, 200, 201, 0, 0, 0, 198, 199, 200, 201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 198, 199, 200, 201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 215, 6, 6, 6, 6, 6, 6, 215, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 16, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 214, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 63, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 215, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    6, 7, 7, 7, 6, 6, 6, 63, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 63, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-    15, 15, 16, 15, 16, 17, 15, 63, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 63, 15, 15, 16, 15, 16, 17, 15, 15, 15, 16, 15, 16, 17, 15, 15, 15, 16, 15, 16, 17, 15, 15, 15, 16, 15, 16, 17, 15, 15, 15, 16, 15, 16, 17, 15, 15, 15, 16, 15, 16, 17, 15, 15, 15, 16, 15, 16, 17, 15, 15, 15, 15, 16, 15, 16, 17, 15,
-    56, 22, 20, 56, 22, 20, 56, 22, 19, 19, 25, 19, 19, 25, 19, 19, 25, 19, 19, 25, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20, 56, 22, 20,
-    25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26, 25, 20, 26,
-    20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19, 20, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25];
-
-  this.collisions = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-  this.rings = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  this.data = map.data;
+  this.collisions = map.collisions;
+  this.artifacts = map.rings;
+  this.foreground = map.foreground;
 
   this.halfScreen = this.tilesDisplayX / 2 * this.tileSize;
   this.endLevel = this.nbTotalTilesX * this.tileSize;
+
+  this.watterRun = 1;
 }
 
 Level.prototype.isAtEndOfLevel = function(x) {
@@ -76,66 +26,74 @@ Level.prototype.isAtMiddleOfLevel = function(x) {
   return x > this.halfScreen;
 };
 
-Level.prototype.draw = function(context, image, posXCharacter, posYCharacter) {
+Level.prototype.draw = function(context, image, posXCharacter, posYCharacter, isDialog) {
 
   var startX = 0;
 
-  if (this.isAtEndOfLevel(posXCharacter)) { // Fin du niveau
+  if (this.isAtEndOfLevel(posXCharacter)) {
     startX = this.endLevel - this.halfScreen * 2;
-  } else if (this.isAtMiddleOfLevel(posXCharacter)) { // Milieu de niveau
+  } else if (this.isAtMiddleOfLevel(posXCharacter)) {
     startX = posXCharacter - this.halfScreen;
   }
 
-  // Début d'affichage de la carte
   var fromTileX = Math.floor(startX / this.tileSize);
-  // pour les y, on dessine à partir de la moitié de l'écran au dessus de la position du personnage
   var fromTileY = 0;
 
-  // Décallage du 1er tile ???????
   var remainingX = Math.floor(startX % this.tileSize);
   var remainingY = 0;
 
-  // On affiche un tile de plus s'il y a du décallage pour éviter d'avoir du blanc en fin de ligne
+  this.watterRun += 1;
+  this.watterRun &= 0x0F;
+
   for (var y = fromTileY, newY = 0; y < fromTileY + this.tilesDisplayY + (remainingY > 0 ? 1 : 0); y++, newY++) {
     for (var x = fromTileX, newX = 0; x < fromTileX + this.tilesDisplayX + (remainingX > 0 ? 1 : 0); x++, newX++) {
 
-      // Récupération du tile dans le tableau (récupère le numéro du tile)
-      var tilePositionInData = (y * this.nbTotalTilesX) + x;
+      const tilePositionInData = (y * this.nbTotalTilesX) + x;
+      const tileNum = this.data[tilePositionInData] & 0x0FFF;
+      if (this.data[tilePositionInData] === -1 && this.artifacts[tilePositionInData] === -1) continue;
 
-      // Clipping du tile à afficher (positions du tile dans le sprite)
+      if (!this.watterRun && tileNum > 214 && tileNum < 222) {
+        if (tileNum > 215 && tileNum < 219) { this.data[tilePositionInData] += 1; }
+        else if (tileNum === 219) { this.data[tilePositionInData] = 216; }
+        else this.data[tilePositionInData] ^= (1 << 31);
+      }
+
       var tilePosX = this.getTilePositionX(this.data[tilePositionInData]);
       var tilePosY = this.getTilePositionY(this.data[tilePositionInData]);
 
-      // drawImage(img, sx, sy, swidth, sheight, x, y, width, height)
-      // img   	Specifies the image, canvas, or video element to use
-      // sx       Optional. The x coordinate where to start clipping
-      // sy       Optional. The y coordinate where to start clipping
-      // swidth 	Optional. The width of the clipped image
-      // sheight 	Optional. The height of the clipped image
-      // x 	The x coordinate where to place the image on the canvas
-      // y 	The y coordinate where to place the image on the canvas
-      // width 	Optional. The width of the image to use (stretch or reduce the image)
-      // height 	Optional. The height of the image to use (stretch or reduce the image)
-      // https://developer.mozilla.org/fr/docs/Tutoriel_canvas/Utilisation_d%27images#D.C3.A9coupage
-
-      // Correction pour FF
-      // les positions négatives ne sont supportées
-      // la correction consiste à prendre le dernier sprite en bas en forcant la valeur Y
-      // TODO : revoir si posibilité de faire plus propre
       if (tilePosY < 0) {
         tilePosY = tilePosX;
       }
 
-      context.drawImage(image,
-        tilePosX * this.tileSize * 2, tilePosY * this.tileSize,
+      const flip = {
+        x: 1 - ((this.data[tilePositionInData] >> 30) & 0x2),
+        y: 1 - ((this.data[tilePositionInData] >> 29) & 0x2),
+      };
+
+      // bind arguments to a new function
+      const scale = context.scale.bind(context, flip.x, flip.y);
+      const draw = context.drawImage.bind(context, image,
+        (tilePosX * this.tileSize * 2),
+        (tilePosY * this.tileSize),
         this.tileSize, this.tileSize,
-        (newX * this.tileSize - remainingX), (newY * this.tileSize - remainingY),
+        flip.x * ((newX - (flip.x - 1) / 2) * this.tileSize - remainingX),
+        flip.y * ((newY - (flip.y - 1) / 2) * this.tileSize - remainingY),
         this.tileSize, this.tileSize);
 
-      if (this.rings[tilePositionInData] == 1) {
+      // test for tile > 100
+      if (!isDialog && this.foreground[tilePositionInData] === 179) { // great success
+        foreground.push({ scale: scale, draw: draw });
+      } else {
+        context.save();
+        scale();
+        draw();
+        context.restore();
+      }
+
+      if (this.artifacts[tilePositionInData] == 285) { // normal rings
         rings.drawRing(context, newX * this.tileSize - remainingX, newY * this.tileSize - remainingY);
       }
-      if (this.rings[tilePositionInData] == 2) {
+      if (this.artifacts[tilePositionInData] == 266) { // the ring
         ring.drawRing(context, newX * this.tileSize - remainingX, newY * this.tileSize - remainingY);
       }
     }
@@ -143,48 +101,59 @@ Level.prototype.draw = function(context, image, posXCharacter, posYCharacter) {
 };
 
 Level.prototype.getTilePositionX = function(tileNumber) {
-
-  if (tileNumber % this.tilesDisplayX == 0) {
-    return this.tilesDisplayX - 1;
-  } else {
-    return Math.floor(tileNumber % this.tilesDisplayX) - 1;
-  }
+  const id = tileNumber & 0x00000FFF;
+  return Math.floor(id % this.tilesDisplayX);
 };
 
 Level.prototype.getTilePositionY = function(tileNumber) {
-  return Math.ceil(tileNumber / this.tilesDisplayX) - 1;
+  const id = tileNumber & 0x00000FFF;
+  return Math.floor(id / this.tilesDisplayX);
 };
 
 Level.prototype.getCollisionData = function(x, y) {
-  var tileX = Math.floor(x / this.tileSize);
+  var tileX = Math.floor((x % this.endLevel) / this.tileSize);
   var tileY = Math.floor(y / this.tileSize);
 
   var tilePositionInData = (tileY * this.nbTotalTilesX) + tileX;
+  switch (this.collisions[tilePositionInData]) {
+    case 0:
+      window.dispatchEvent(new Event('absolutecollision'));
+      break;
+    case 0:
+      window.dispatchEvent(new Event('absolutecollision'));
+      break;
+  }
+
   return this.collisions[tilePositionInData];
 };
 
-Level.prototype.checkAABBRing = function(x, y) {
+Level.prototype.checkAABBRing = function(x, y, isDialog) {
 
   // AABB (Axis Aligned Bounding Box)
-  return this.manageRingCollision(x - 15, y - 25) ||
-    this.manageRingCollision(x, y - 25) ||
-    this.manageRingCollision(x + 15, y - 25) ||
-    this.manageRingCollision(x - 15, y - 5) ||
-    this.manageRingCollision(x, y - 5) ||
-    this.manageRingCollision(x + 15, y - 5) ||
-    this.manageRingCollision(x - 15, y + 15) ||
-    this.manageRingCollision(x, y + 15) ||
-    this.manageRingCollision(x + 15, y + 15);
+  return this.manageRingCollision(x - 15, y - 25, isDialog) ||
+    this.manageRingCollision(x, y - 25, isDialog) ||
+    this.manageRingCollision(x + 15, y - 25, isDialog) ||
+    this.manageRingCollision(x - 15, y - 5, isDialog) ||
+    this.manageRingCollision(x, y - 5, isDialog) ||
+    this.manageRingCollision(x + 15, y - 5, isDialog) ||
+    this.manageRingCollision(x - 15, y + 15, isDialog) ||
+    this.manageRingCollision(x, y + 15, isDialog) ||
+    this.manageRingCollision(x + 15, y + 15, isDialog);
 };
 
-Level.prototype.manageRingCollision = function(x, y) {
+Level.prototype.manageRingCollision = function(x, y, isDialog) {
   var tileX = Math.floor(x / this.tileSize);
   var tileY = Math.floor(y / this.tileSize);
 
   var tilePositionInData = (tileY * this.nbTotalTilesX) + tileX;
 
-  if (this.rings[tilePositionInData] === 1) { // Collision
-    this.rings[tilePositionInData] = 0;
+  if (this.artifacts[tilePositionInData] === 285) { // Collision
+    this.artifacts[tilePositionInData] = -1;
+    window.dispatchEvent(new Event('ring'));
+    return true;
+  } else if (isDialog && this.artifacts[tilePositionInData] === 284) {
+    this.artifacts[tilePositionInData] = -1;
+    window.dispatchEvent(new Event('dialogring'));
     return true;
   }
 

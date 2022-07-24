@@ -4,10 +4,9 @@ window.requestAnimationFrame = (function() {
     window.mozRequestAnimationFrame ||
     function(callback) {
       window.setTimeout(callback, 1000 / 60);
-    };
+    }
 })();
 
-var scale = 1;
 var titleScreen;
 var backgrounds;
 var level;
@@ -16,6 +15,7 @@ var physics;
 var gamepad;
 var rings;
 var ring;
+var dialog;
 
 var sounds = [
   { title: 'stage', url: 'resources/audio/emerald-hill.mp3' },
@@ -38,20 +38,26 @@ var images = [
 ];
 var resources = new Resources(images);
 
+var scale = 1;
 var canvas = document.getElementById('game');
-{
-  let width = window.innerWidth / canvas.width;
-  let height = window.innerHeight / canvas.height;
-  scale = width < height ? width : height;
-  const granularity = 8;
-  scale = Math.floor(scale * granularity) / granularity;
-  canvas.width = (canvas.width * scale) | 0;
-  canvas.height = (canvas.height * scale) | 0;
-}
 var context2d = canvas.getContext('2d');
-context2d.scale(scale, scale);
-context2d.mozImageSmoothingEnabled = false;  // firefox
-context2d.imageSmoothingEnabled = false;
+
+function resizeScreen() {
+  // console.log(window.innerWidth, window.innerHeight, window.outerWidth, window.outerHeight)
+  let width = window.innerWidth / 320;
+  let height = window.innerHeight / 240;
+  scale = width < height ? width : height;
+  const granularity = 1;
+  scale = Math.floor(scale * granularity) / granularity;
+  canvas.width = (320 * scale) | 0;
+  canvas.height = (240 * scale) | 0;
+  canvas.style = `padding-top: ${(window.innerHeight - canvas.height) >> 2}px`
+  context2d = canvas.getContext('2d');
+  context2d.scale(scale, scale);
+  context2d.mozImageSmoothingEnabled = false;  // firefox
+  context2d.webkitImageSmoothingEnabled = false;  // webkit
+  context2d.imageSmoothingEnabled = false;
+}
 
 var rafHandler;
 
@@ -59,10 +65,9 @@ var A = false;
 var down = false;
 var left = false;
 var right = false;
-var first_input = true;
 var last_side_was_left = false;
 var joy_jump = false;
-var joy_start = false;
+var foreground = [];
 
 const handleKeydown = (e) => {
   if (e.code === "Space") A = true;
@@ -79,46 +84,33 @@ const handleKeyup = (e) => {
 };
 
 function interactToStart() {
-  console.log("called first")
-  if (first_input) {
-    first_input = false;
-    launchTitle();
-    const el = document.documentElement;
-    const rfs = el.requestFullScreen
-      || el.webkitRequestFullScreen
-      || el.mozRequestFullScreen;
-    rfs.call(el);
-
-    window.removeEventListener("mousemove", interactToStart);
-    window.removeEventListener("keydown", interactToStart);
-
-    window.addEventListener("keydown", handleKeydown);
-    window.addEventListener("keyup", handleKeyup);
-
-    {
-      scale = 1;
-      let width = window.outerWidth / 320;
-      let height = window.outerHeight / 240;
-      scale = width < height ? width : height;
-      const granularity = 2;
-      scale = Math.floor(scale * granularity) / granularity;
-      canvas.width = (320 * scale) | 0;
-      canvas.height = (240 * scale) | 0;
-      canvas.style = `padding-top: ${(window.outerHeight - canvas.height) >> 1}px`
-    }
-    context2d = canvas.getContext('2d');
-    context2d.scale(scale, scale);
-    context2d.mozImageSmoothingEnabled = false;  // firefox
-    context2d.imageSmoothingEnabled = false;
+  console.log("interaction.")
+  // launchTitle();
+  let start = true;
+  const resize = () => {
+    window.setTimeout(resizeScreen, 500);
+    if (start) launchTitle();
+    start = false;
   }
-}
+  document.addEventListener("fullscreenchange", resize);
+  document.addEventListener("webkitfullscreenchange", resize);
+  document.addEventListener("mozfullscreenchange", resize);
+  const el = document.documentElement;
+  const rfs = el.requestFullScreen
+    || el.webkitRequestFullScreen
+    || el.mozRequestFullScreen;
+  rfs.call(el);
 
-// window.addEventListener("mousemove", interactToStart);
-window.addEventListener("keydown", interactToStart);
+  window.removeEventListener("touchend", interactToStart);
+  window.removeEventListener("keydown", interactToStart);
+
+  window.addEventListener("keydown", handleKeydown);
+  window.addEventListener("keyup", handleKeyup);
+}
 
 // joystick
 const joy = new JoyStick("joyDiv", {}, ({ cardinalDirection }) => {
-  if (!A && cardinalDirection.match(/N/) && !physics.isInAir()) {
+  if (!A && cardinalDirection.match(/N/) && !physics.isInAir(dialog.visible)) {
     joy_jump = true;
   }
   if (cardinalDirection.match(/W/)) {
@@ -135,33 +127,27 @@ const joy = new JoyStick("joyDiv", {}, ({ cardinalDirection }) => {
     right = false;
     left = false;
   }
-  if (joy_start && first_input && cardinalDirection.match(/C/)) setTimeout(interactToStart, 500);
-  joy_start = true;
   console.log("loggin joypad");
 });
 
 function checkInput() {
 
-  // if (gamepad.controls[gamepad.A] == true && !physics.isInAir()) {
-  if ((joy_jump || A) && !physics.isInAir()) {
+  if ((joy_jump || A) && !physics.isInAir(dialog.visible)) {
     joy_jump = false;
     audio.jump();
     physics.jump();
+    dialog.printNext = true;
 
-  } else if (physics.isInAir()) {
-    // if (gamepad.controls[gamepad.LEFT] == true) {
+  } else if (physics.isInAir(dialog.visible)) {
     if (left) {
       physics.accelerateLeft(true);
-      // } else if (gamepad.controls[gamepad.RIGHT] == true) {
     } else if (right) {
       physics.accelerateRight(true);
     }
 
-    // } else if (!gamepad.controls[gamepad.LEFT] && !gamepad.controls[gamepad.RIGHT]) {
   } else if (!(left || right)) {
     physics.applyFriction();
 
-    // } else if (gamepad.controls[gamepad.LEFT] == true) {
   } else if (left) {
     if (physics.shouldBrakeLeft()) {
       audio.stop();
@@ -172,7 +158,6 @@ function checkInput() {
     } else {
       physics.accelerateLeft(false);
     }
-    // } else if (gamepad.controls[gamepad.RIGHT] == true) {
   } else if (right) {
     if (physics.shouldBrakeRight()) {
       audio.stop();
@@ -188,6 +173,7 @@ function checkInput() {
 
 
 function launchTitle() {
+  titleScreen.start();
   audio.stageTitle(startGame);
 }
 
@@ -200,30 +186,59 @@ function startGame() {
   console.log('start game');
   window.cancelAnimationFrame(rafHandler);
 
-  // gamepad = new Gamepad(mapping);
   backgrounds = new Background();
   physics = new Physics();
-  level = new Level();
+  level = new Level(map);
   sonic = new Sonic();
-  rings = new Rings()
-  ring = new Ring()
+  rings = new Rings();
+  ring = new Ring();
+  dialog = new Dialog(map, dialog_tiles);
 
   paintGame();
   audio.stageBgm();
+
+
+  // first dialog
+  window.setTimeout(() => {
+    dialog.setText("Puxa vida, bubu! o dr eggman roubou todos os meus aneis de poder! " +
+      "ainda bem que ele deixou cair alguns pelo caminho... \n \n " +
+      "preciso coletar todos os aneis antes que ele tenha tempo de voltar!");
+    dialog.visible = true;
+  }, 2000);
 }
 
-function paintGame() {
-  backgrounds.paint(context2d, physics.x);
-  level.draw(context2d, resources.images['tileset'], physics.x, physics.y);
-  sonic.draw(context2d, physics.x, physics.y);
+let lastTimestamp = 90000000;
+const UNITS = 60 / 1000;
+function physicsLoop(timestamp) {
 
-  checkInput();
-  physics.applyPhysics();
-  sonic.animate();
+  const stepSize = (timestamp - lastTimestamp) * UNITS - 0.4;
+  lastTimestamp = timestamp;
+  for (let i = 0; stepSize > 0 && i < stepSize; i++) {
+    checkInput();
+    physics.applyPhysics(dialog.visible);
+    sonic.animate(dialog.visible);
 
-  if (level.checkAABBRing(physics.x, physics.y)) {
-    audio.ring();
+    if (level.checkAABBRing(physics.x, physics.y, dialog.visible)) {
+      audio.ring();
+    }
   }
+}
+
+function paintGame(timestamp) {
+  // find out the step for the physics sim
+  backgrounds.paint(context2d, physics.x);
+  level.draw(context2d, resources.images['tileset'], physics.x, physics.y, dialog.visible);
+  dialog.print(context2d, resources.images['tileset']);
+  sonic.draw(context2d, physics.x, physics.y);
+  foreground.forEach(({ scale, draw }) => {
+    context2d.save();
+    scale();
+    draw();
+    context2d.restore();
+  });
+  foreground = [];
+
+  physicsLoop(timestamp);
 
   window.requestAnimationFrame(paintGame);
 }
@@ -232,5 +247,9 @@ audio.load()
   .then(() => resources.load())
   .then(() => {
     titleScreen = new TitleScreen();
+    resizeScreen();
     paintTitle();
+    window.addEventListener("keydown", interactToStart, { once: true });
+    window.addEventListener("touchend", setTimeout.bind(window, () => interactToStart(), 200), { once: true });
   });
+

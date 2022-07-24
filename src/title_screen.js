@@ -13,22 +13,25 @@ class TitleScreen {
     };
 
     this.scrolledValue = 0;
+    this.pressToStart = true;
   }
+
+  start() {
+    this.pressToStart = false;
+  }
+
   paint(context) {
 
     context.save();
     if (animation) context.filter = `blur(${Math.min((animation >> 5), 8)}px)`
     for (var i = 0; i < this.backgrounds.length; i++) {
 
-      // Décallage de chaque image, le modulo permet de boucler quand on a scrollé la taille du canvas
       var offset = this.scrolledValue * this.backgrounds[i].scrollValue % this.imageWidth;
       context.drawImage(this.backgrounds[i].background,
         offset, this.backgrounds[i].y);
 
-      // Pour les calques qui bougent
       if (this.backgrounds[i].scrollValue > 0) {
 
-        // Si on n'a pas fini un cycle total, affiche une image à côté
         if (offset > 0) {
           context.drawImage(this.backgrounds[i].background,
             offset - this.imageWidth, this.backgrounds[i].y);
@@ -46,24 +49,58 @@ class TitleScreen {
     context.shadowOffsetY = 4 * scale;
     context.textAlign = "center";
     context.lineWidth = 1.5;
-    context.fillStyle = "#F7FFFF"
-    if (first_input) {
-      context.font = "15px sega";
-      context.fillText("Press any key to Start...", 160, 110);
+    context.fillStyle = "#FFF0F0"
+
+    // define renderingSequence
+    const renderingSequence = [];
+
+    if (this.pressToStart) {
+      renderingSequence.push(() => {
+        // console.log("press key");
+        context.font = "15px sega";
+        context.fillText("Press any key to Start...", 160, 110);
+      });
     } else {
       animation++;
+      renderingSequence.push(() => {
+        // console.log("logo");
+        context.drawImage(resources.images['title_sonic'], 25, animation < 350 ? animation - 350 : 0);
+        context.filter = "";
+      });
+
       if (animation > 380) {
-        context.font = "40px sega";
-        context.fillText("Bubu", 160, 197);
+        renderingSequence.push(() => {
+          // console.log("bubu");
+          context.font = "40px sega";
+          context.fillStyle = "#ff7070"
+          context.fillText("Bubu", 160, 165);
+        });
+
         if (animation < 400) {
-          context.filter = "brightness(1.5)";
+          renderingSequence.unshift(() => { context.filter = "brightness(1.5)"; });
         } else {
-          context.font = "20px sega";
-          context.fillText("Edition", 160, 214);
+          renderingSequence.push(() => {
+            // console.log("edition");
+            context.font = "20px sega";
+            context.fillStyle = "#FFf0f0"
+            context.fillText("Edition", 160, 182);
+          })
+          if (animation > 415) {
+            renderingSequence.push(() => {
+              // console.log("edition");
+              context.font = "8px sega";
+              context.fillStyle = "#FFf0f0"
+              context.fillText("(c) 2013", 160, 210);
+            })
+
+          }
         }
       }
-      context.drawImage(resources.images['title_sonic'], 25, animation < 350 ? animation - 330 : 20);
     }
+
+    // render
+    renderingSequence.forEach(render => render());
+
     context.restore();
 
     this.scrolledValue--;

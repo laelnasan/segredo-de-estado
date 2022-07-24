@@ -10,7 +10,7 @@ function Sonic() {
   this.standAnimationNumberFrame = 1;
   this.runAnimationNumberFrame = 8;
   this.dashAnimationNumberFrame = 4;
-  this.ballAnimationNumberFrame = 5;
+  this.ballAnimationNumberFrame = 8;
   this.stopAnimationNumberFrame = 3;
 
   // Position y de l'animation courante dans le sprite général.
@@ -40,7 +40,7 @@ Sonic.prototype.draw = function(context, x, y) {
     displayX = halfScreen;
   }
 
-  context.drawImage(resources.images['sonicSprites'], this.currentAnimationFrame * this.animationFrameWidth, this.animationY, 44, 46, displayX - 22, y - 30, (44), (46));
+  context.drawImage(resources.images['sonicSprites'], this.currentAnimationFrame * this.animationFrameWidth, this.animationY, 44, 46, (displayX) % endLevel - 22, y - 20, (44), (46));
 };
 
 // Efface l'animation courante
@@ -177,8 +177,8 @@ Sonic.prototype.stop = function() {
 };
 
 
-Sonic.prototype.animate = function() {
-  if (physics.isInAir()) {
+Sonic.prototype.animate = function(isDialog) {
+  if (physics.isInAir(isDialog)) {
     if (physics.speed > 0) {
       this.startBallRight();
     } else if (physics.speed < 0) {
