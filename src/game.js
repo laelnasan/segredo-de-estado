@@ -287,7 +287,7 @@ function startGame() {
     physics.x %= level.endLevel;
     physics.speed *= 0.0001;
     dialog.setText("\n fui ao fim do mundo e voltei... a barreira espacial foi superada e mesmo " +
-      " que eu precise dar a volta ao mundo eu sei que vou conseguir!!!");
+      " que eu precise dar a volta ao mundo agora eu sei que vou conseguir!!!");
     hintBase = "\n \n Mas quem diria... as vezes as loucuras podem dar certo! hahaha \n \n \n \n \n " +
       "hmmm... \n \n \n \n \n \n " +
       "parece que uma caverna se abriu mais a frente... \n \n \n \n " +

@@ -35,12 +35,12 @@ Physics.prototype.applyGravity = function() {
 };
 
 Physics.prototype.accelerateRight = function(inAir) {
-  this.speed += (inAir ? this.ACCELERATION_STRENGTH * 2 : this.ACCELERATION_STRENGTH);
+  this.speed += (inAir ? this.ACCELERATION_STRENGTH * 1.2 : this.ACCELERATION_STRENGTH);
   this.speed = Math.min(this.speed, this.MAX_SPEED);
 };
 
 Physics.prototype.accelerateLeft = function(inAir) {
-  this.speed -= (inAir ? this.ACCELERATION_STRENGTH * 2 : this.ACCELERATION_STRENGTH);
+  this.speed -= (inAir ? this.ACCELERATION_STRENGTH * 1.2 : this.ACCELERATION_STRENGTH);
   this.speed = Math.max(this.speed, this.MAX_SPEED * -1);
 };
 
@@ -84,13 +84,13 @@ Physics.prototype.canMove = function(right, isDialog) {
   if (collisionValueX === 178) {
     if (this.speed > 5.5) {
       this.ySpeed = -5.4;
-      this.speed = 6;
+      this.speed = 6.2;
     }
     return true;
   } else if (collisionValueX === 179) {
     if (this.speed < -5.5) {
       this.ySpeed = -5.4;
-      this.speed = -6;
+      this.speed = -6.2;
     }
     return true;
   }
@@ -127,13 +127,13 @@ Physics.prototype.isInAir = function(isDialog) {
 
     } else if (collisionValueY === 176) {
       if (dir.y < -0.8) {
-        this.speed = -5.6;
-        this.ySpeed = -4.5;
+        this.speed = -4.6;
+        this.ySpeed = -4.6;
       }
     } else if (collisionValueY === 181) {
       if (dir.y < -0.8) {
-        this.speed = 5.6;
-        this.ySpeed = -4.5;
+        this.speed = 4.6;
+        this.ySpeed = -4.6;
       }
     }
   }
