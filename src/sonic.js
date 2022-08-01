@@ -32,7 +32,7 @@ Sonic.prototype.draw = function(context, x, y) {
 
   var endLevel = level.nbTotalTilesX * level.tileSize;
   var halfScreen = level.tilesDisplayX / 2 * level.tileSize;
-  var displayX = x;
+  var displayX = (x % endLevel) + endLevel;
 
   if (level.isAtEndOfLevel(x)) { // Fin de niveau
     displayX = x - endLevel + halfScreen * 2;

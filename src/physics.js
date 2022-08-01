@@ -100,13 +100,13 @@ Physics.prototype.canMove = function(right, isDialog) {
 Physics.prototype.isInAir = function(isDialog) {
   var collisionValueY = level.getCollisionData(this.x, this.y + this.ySpeed + level.tileSize);
 
+  // This is an unlgy hack for the sonic loop
   loop: if (collisionValueY > 175) {
     const v = Math.sqrt(this.speed * this.speed + this.ySpeed * this.ySpeed);
+    // only work at high velocity
     if (v < 6) break loop;
 
     const dir = { x: this.speed / v, y: this.ySpeed / v };
-    // console.log(collisionValueY, dir.x, dir.y)
-
     if (collisionValueY === 177) {
       if (dir.x > 0.6 && dir.y < -0.4) {
         this.speed = 0.242535 * v;
@@ -137,8 +137,10 @@ Physics.prototype.isInAir = function(isDialog) {
       }
     }
   }
+
   else if (this.ySpeed < 0) return true;
   else if (collisionValueY === 23 || (collisionValueY === 101 && isDialog)) { // custom code
+    if (this.x < 0 || this.x > level.endLevel) window.dispatchEvent(new Event("outborder"));
     this.y = this.y > 0 ? (this.y + this.ySpeed) & 0xfff0 : 0;
     return false;
   }

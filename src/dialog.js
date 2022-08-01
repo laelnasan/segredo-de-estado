@@ -9,6 +9,7 @@ function Dialog(map, tiles) {
   this.y = 1;
   this.w = 18;
   this.h = 10;
+  this.yOffset = 0;
 
   this.text = { x: 36, y: 36 + 7, h: 6 * 11, w: 31 * 8 };
   this.continue = { x: 16 * this.tileSize + 8, y: 7 * this.tileSize - 2 };
@@ -52,7 +53,7 @@ Dialog.prototype.draw = function(context, image, text) {
         (tilePosY * this.tileSize),
         this.tileSize, this.tileSize,
         flip.x * ((x - (flip.x - 1) / 2) * this.tileSize),
-        flip.y * ((y - (flip.y - 1) / 2) * this.tileSize),
+        flip.y * ((y - (flip.y - 1) / 2) * this.tileSize) + this.yOffset,
         this.tileSize, this.tileSize);
       context.restore();
     }
@@ -90,18 +91,18 @@ Dialog.prototype.draw = function(context, image, text) {
     }
 
     this.text.lines.push(line);
-    context.fillText(line, this.text.x, this.text.y + y * 11);
+    context.fillText(line, this.text.x, this.text.y + y * 11 + this.yOffset);
   }
 
   if (textWrapper.length) this.text.remaining = textWrapper;
 
   context.textAlign = "right";
-  context.fillText(this.text.remaining ? "... Pular" : "Pular", this.continue.x, this.continue.y);
+  context.fillText(this.text.remaining ? "... Pular" : "Pular", this.continue.x, this.continue.y + this.yOffset);
   context.restore();
 
   // draw ring
   if (this.hasRing())
-    rings.drawRing(context, this.ring.x, this.ring.y);
+    rings.drawRing(context, this.ring.x, this.ring.y + this.yOffset);
 };
 
 Dialog.prototype.print = function(context, image) {
@@ -113,7 +114,9 @@ Dialog.prototype.next = function() {
   this.printNext = true;
 }
 
-Dialog.prototype.setText = function(text) {
+Dialog.prototype.setText = function(text, bottom = false) {
   this.newText = text;
   this.visible = true;
+  this.yOffset = bottom ? 6 : 0;
+  this.yOffset *= this.tileSize;
 }
