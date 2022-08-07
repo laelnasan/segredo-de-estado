@@ -18,9 +18,10 @@ function Level(map) {
   this.watterRun = 1;
   this.collectedRings = 0; // adjusting variable
   this.maxRings = 278 + this.collectedRings;
-  this.continueRings = 190 + this.collectedRings;
+  this.continueRings = 165 + this.collectedRings;
   this.mermaid1Rings = 130 + this.collectedRings;
   this.mermaid2Rings = 100 + this.collectedRings;
+  this.trueending = false;
 }
 
 Level.prototype.isAtEndOfLevel = function(x) {
@@ -31,7 +32,7 @@ Level.prototype.isAtMiddleOfLevel = function(x) {
   return x > this.halfScreen;
 };
 
-Level.prototype.draw = function(context, image, posXCharacter, posYCharacter, isDialog) {
+Level.prototype.draw = function(context, timestamp, image, posXCharacter, posYCharacter, isDialog) {
 
   var startX = 0;
 
@@ -99,7 +100,10 @@ Level.prototype.draw = function(context, image, posXCharacter, posYCharacter, is
         rings.drawRing(context, newX * this.tileSize - remainingX, newY * this.tileSize - remainingY);
       }
       if (this.artifacts[tilePositionInData] == 266) { // the ring
-        ring.drawRing(context, newX * this.tileSize - remainingX, newY * this.tileSize - remainingY);
+        foreground.push({
+          scale: () => { },
+          draw: ring.drawRing.bind(ring, context, newX * this.tileSize - remainingX, newY * this.tileSize - remainingY),
+        });
       }
     }
   }
@@ -109,7 +113,7 @@ Level.prototype.draw = function(context, image, posXCharacter, posYCharacter, is
   let counter = "" + this.collectedRings;
   while (counter.length < 3) counter = "0" + counter;
 
-  foreground.push({
+  const display = {
     scale: () => {
       context.textAlign = "left";
       context.fillStyle = "#FFF0F0"
@@ -117,8 +121,38 @@ Level.prototype.draw = function(context, image, posXCharacter, posYCharacter, is
 
     },
     draw: context.fillText.bind(context, counter, 20, 14),
-  })
+  };
+  foreground.push(display);
+
+  // add blackout to foreground here
+  if (this.startTimestamp) foreground.push({
+    scale: () => { context.save() },
+    draw: () => {
+      context.globalAlpha = (timestamp - this.startTimestamp) / 8000;
+      context.fillStyle = "#000000";
+      context.fillRect(0, 0, 320, 240);
+      context.globalAlpha = timestamp < (this.startTimestamp + 9000) ? 0 : (timestamp - this.startTimestamp - 9000) / 8000;
+      context.textAlign = "center";
+      context.fillStyle = "#FFF0F0"
+      context.font = "20px sega";
+      context.fillText(this.trueending ? "inicio" : "fim", 160, 130);
+      context.globalAlpha = timestamp < (this.startTimestamp + 20000) ? 0 : (timestamp - this.startTimestamp - 20000) / 8000;
+      context.textAlign = "center";
+      context.fillStyle = "#FFF0F0"
+      context.font = "20px sega";
+      context.fillText(this.trueending ? "" : "?", 190, 130);
+    },
+  });
+
+  if (this.trueending) foreground.push(display);
+
 };
+
+Level.prototype.fadeout = function() {
+  window.requestAnimationFrame((timestamp) => {
+    this.startTimestamp = timestamp;
+  });
+}
 
 Level.prototype.getTilePositionX = function(tileNumber) {
   const id = tileNumber & 0x00000FFF;
@@ -211,7 +245,10 @@ Level.prototype.manageRingCollision = function(x, y, isDialog) {
   if (this.artifacts[tilePositionInData] === 285) { // Collision
     this.artifacts[tilePositionInData] = -1;
     this.collectedRings++;
-    window.dispatchEvent(new CustomEvent('ring', { detail: { rings: this.collectedRings } }));
+    if (this.collectedRings == 190)
+      window.dispatchEvent(new Event('mountainclimber'));
+    if (this.collectedRings == 208)
+      window.dispatchEvent(new Event('thebreaking'));
     return true;
   } else if (isDialog && this.artifacts[tilePositionInData] === 284) {
     this.artifacts[tilePositionInData] = -1;
@@ -223,10 +260,10 @@ Level.prototype.manageRingCollision = function(x, y, isDialog) {
     this.collectedRings++;
     window.dispatchEvent(new Event('uiring'));
     return true;
-  } else if (this.collectedRings > 207 && this.artifacts[tilePositionInData] === 266) { // Collision
-    if (this.collectedRings === this.maxRings) {
+  } else if (x > 0 && x < (512 * 16) && this.artifacts[tilePositionInData] === 266) { // Collision
+    if (this.collectedRings > (this.maxRings - 71)) {
       this.artifacts[tilePositionInData] = -1;
-      window.dispatchEvent(new Event('getthering'));
+      window.dispatchEvent(new CustomEvent('getthering', { detail: { isTrue: this.collectedRings === this.maxRings } }));
       return true;
     } else {
       window.dispatchEvent(new Event('thering'));

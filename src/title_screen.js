@@ -20,8 +20,7 @@ class TitleScreen {
     this.pressToStart = false;
   }
 
-  paint(context) {
-
+  paint(context, timestamp) {
     context.save();
     if (animation) context.filter = `blur(${Math.min((animation >> 5), 8)}px)`
     for (var i = 0; i < this.backgrounds.length; i++) {
@@ -59,6 +58,7 @@ class TitleScreen {
         // console.log("press key");
         context.font = "15px sega";
         context.fillText("Press any key to Start...", 160, 110);
+        rose.draw(context)
       });
     } else {
       animation++;

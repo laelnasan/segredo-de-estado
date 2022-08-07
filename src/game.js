@@ -11,6 +11,7 @@ var titleScreen;
 var backgrounds;
 var level;
 var sonic;
+var rose;
 var physics;
 var gamepad;
 var rings;
@@ -19,10 +20,15 @@ var dialog;
 
 var sounds = [
   { title: 'stage', url: 'resources/audio/emerald-hill.mp3' },
+  { title: 'stage2', url: 'resources/audio/emerald-hill3.mp3' },
+  { title: 'chords', url: 'resources/audio/slowed-chords.mp3' },
   { title: 'jump', url: 'resources/audio/jump.wav' },
+  { title: 'loop', url: 'resources/audio/loop.mp3' },
   { title: 'stop', url: 'resources/audio/stop.wav' },
   { title: 'ring', url: 'resources/audio/ring.wav' },
-  { title: 'title', url: 'resources/audio/title-screen.mp3' }
+  { title: 'title', url: 'resources/audio/title-screen.mp3' },
+  { title: 'ending', url: 'resources/audio/ending.mp3' },
+  { title: 'trueending', url: 'resources/audio/trueending.mp3' },
 ];
 var audio = new Audio(sounds);
 
@@ -34,6 +40,7 @@ var images = [
   { title: 'bg_clouds2', url: 'resources/image/mn.png' },
   { title: 'tileset', url: 'resources/image/emeraldhillsc.png' },
   { title: 'sonicSprites', url: 'resources/image/sprites-sonic.png' },
+  { title: 'roseSprites', url: 'resources/image/sprites-rose.png' },
   { title: 'ring', url: 'resources/image/ring-no-bleed.png' }
 ];
 var resources = new Resources(images);
@@ -67,6 +74,7 @@ var left = false;
 var right = false;
 var last_side_was_left = false;
 var joy_jump = false;
+var control_block = false;
 var foreground = [];
 
 const handleKeydown = (e) => {
@@ -130,43 +138,50 @@ const joy = new JoyStick("joyDiv", {}, ({ cardinalDirection }) => {
   console.log("loggin joypad");
 });
 
+let minimumDelay = null;
 function checkInput() {
-
-  if ((joy_jump || A) && !physics.isInAir(!dialog.yOffset && dialog.visible)) {
+  joy_jump = joy_jump && !minimumDelay;
+  if ((joy_jump || A) && !physics.isInAir(!dialog.yOffset && dialog.visible) && !minimumDelay) {
+    if (!control_block) {
+      audio.jump();
+      physics.jump();
+    }
     joy_jump = false;
-    audio.jump();
-    physics.jump();
-    dialog.printNext = true;
+    dialog.next();
+    window.clearTimeout(minimumDelay);
+    minimumDelay = window.setTimeout(() => { minimumDelay = null; }, 200);
 
-  } else if (physics.isInAir(!dialog.yOffset && dialog.visible)) {
-    if (left) {
-      physics.accelerateLeft(true);
+  } if (!control_block) {
+    if (physics.isInAir(!dialog.yOffset && dialog.visible)) {
+      if (left) {
+        physics.accelerateLeft(true);
+      } else if (right) {
+        physics.accelerateRight(true);
+      }
+
+    } else if (!(left || right)) {
+      physics.applyFriction();
+
+    } else if (left) {
+      if (physics.shouldBrakeLeft()) {
+        audio.stop();
+        sonic.startStopRight();
+        physics.decelerateWhenRunningRight();
+      } else if (physics.shouldDecelerateLeft()) {
+        physics.decelerateWhenRunningRight();
+      } else {
+        physics.accelerateLeft(false);
+      }
     } else if (right) {
-      physics.accelerateRight(true);
-    }
-
-  } else if (!(left || right)) {
-    physics.applyFriction();
-
-  } else if (left) {
-    if (physics.shouldBrakeLeft()) {
-      audio.stop();
-      sonic.startStopRight();
-      physics.decelerateWhenRunningRight();
-    } else if (physics.shouldDecelerateLeft()) {
-      physics.decelerateWhenRunningRight();
-    } else {
-      physics.accelerateLeft(false);
-    }
-  } else if (right) {
-    if (physics.shouldBrakeRight()) {
-      audio.stop();
-      sonic.startStopLeft();
-      physics.decelerateWhenRunningLeft();
-    } else if (physics.shouldDecelerateRight()) {
-      physics.decelerateWhenRunningLeft();
-    } else {
-      physics.accelerateRight(false);
+      if (physics.shouldBrakeRight()) {
+        audio.stop();
+        sonic.startStopLeft();
+        physics.decelerateWhenRunningLeft();
+      } else if (physics.shouldDecelerateRight()) {
+        physics.decelerateWhenRunningLeft();
+      } else {
+        physics.accelerateRight(false);
+      }
     }
   }
 }
@@ -177,8 +192,8 @@ function launchTitle() {
   audio.stageTitle(startGame);
 }
 
-function paintTitle() {
-  titleScreen.paint(context2d);
+function paintTitle(timestamp) {
+  titleScreen.paint(context2d, timestamp ?? 0);
   rafHandler = window.requestAnimationFrame(paintTitle);
 }
 
@@ -201,29 +216,65 @@ function startGame() {
   // first dialog
   window.setTimeout(() => {
     physics.speed = 0;
+    control_block = true;
     dialog.setText("\n Puxa vida, bubu! o dr eggman roubou todos os meus aneis de poder! " +
       "ainda bem que ele deixou cair alguns pelo caminho... \n \n \n \n " +
       "preciso coletar todos os aneis antes que ele tenha tempo de voltar!");
   }, 2000);
 
   // continuation dialog
-  let continueDialogText = "acho que \n cheguei no \n meu limite... \n o que mais \n posso fazer? \n \n \n ou talvez...";
+  let continueDialogText = "\n mais nada... \n acho que \n cheguei no \n meu limite... \n \n \n \n \n ou talvez...";
+
   window.addEventListener("continuationdialog", () => {
     if (!dialog.visible && physics.speed === 0 && Math.abs(physics.ySpeed) < 0.6) {
+      window.removeEventListener("ring", mountainclimber);
       dialog.setText(continueDialogText);
-      if (continueDialogText.length > 34) continueDialogText = "\n ou talvez... \n \n \n \n \n ...";
-      else continueDialogText = "\n ou talvez... \n \n \n \n \n ...               ";
+      if (continueDialogText.length > 24) continueDialogText = "\n ou talvez... \n \n \n";
+      else continueDialogText = "\n ou talvez... \n \n               ";
     }
   });
 
+  const theend = () => {
+    audio.ending();
+
+    control_block = true;
+    physics.speed = 1.5;
+    physics.applyFriction = () => { };
+    window.setTimeout(() => { physics.jump(); audio.jump(); physics.speed = 0.7; }, 76500)
+    window.setTimeout(() => {
+      dialog.setText("\n \n \n ... \n \n \n \n \n \n tenho uma pergunta para te fazer...");
+      window.addEventListener("dialogend", () => { level.fadeout(); }, { once: true });
+    }, 112000);
+    /* ending animation */
+  };
+
+  let trueending = theend;
+
   // speedrun
-  const speedrunTextBase = "pode ter sido sorte... mas acho que tem gente tentando encontrar algo a mais nesse jogo... digo,  nessa aventura haha";
+  const speedrunTextBase = "pode ter sido sorte... mas acho que tem gente tentando encontrar algo a mais nesse jogo... digo,  nessa aventura haha \n pena que foi tarde demais...";
   let speedrunText = speedrunTextBase;
   window.addEventListener("speedrun", () => {
     if (!dialog.visible && physics.speed < 0.05 && Math.abs(physics.ySpeed) < 0.6) {
       dialog.setText(speedrunText);
       if (speedrunText.length < 120) speedrunText += "                                                   ";
       else speedrunText = speedrunTextBase;
+    } else if (dialog.visible && dialog.text.text !== speedrunText) {
+      trueending = () => {
+        audio.trueending();
+        audio.jump();
+        control_block = true;
+        physics.speed = 1.5;
+        physics.jump();
+        physics.applyFriction = () => { };
+        window.setTimeout(() => { physics.jump(); audio.jump(); physics.speed = 0.7; }, 76500)
+        window.setTimeout(() => { rose = new Rose(); rose.countdown = 64 }, 95000)
+        window.addEventListener("hug", () => {
+          rose.animate("huging");
+          dialog.setText("\n \n \n infinito...");
+          level.trueending = true;
+          window.addEventListener("dialogend", () => level.fadeout(), { once: true });
+        }, { once: true });
+      };
     }
   });
 
@@ -234,6 +285,7 @@ function startGame() {
   window.addEventListener("cataratahint", () => {
     if (!dialog.visible && physics.speed < 0.05 && Math.abs(physics.ySpeed) < 0.6) {
       dialog.setText(hintText);
+      physics.speed = 0;
       if (hintText[0] === " ") hintText = hintBase;
       else hintText = " " + hintText;
     }
@@ -244,17 +296,32 @@ function startGame() {
     physics.x %= level.endLevel;
     physics.x += level.endLevel;
     physics.x %= level.endLevel;
-    physics.speed *= 0.0001;
+    physics.speed = 0;
     dialog.setText("Dei a volta ao mundo!!! de novo...");
+    control_block = true;
   }
 
   const theringText = "\n \n ... ... ... ... Esse anel... parece diferente dos outros... \n \n \n \n \n " +
     " um tanto quanto etereo... por que passo por ele sem conseguir segurar??? \n \n \n \n" +
     " ... \n \n \n \n \n \n \n \n e por que sinto esse aperto no peito?...";
   const thefirsttimering = () => {
-    if (!dialog.visible && physics.speed < 0.05 && Math.abs(physics.ySpeed) < 0.6) {
+    if (physics.speed < 0.05 && Math.abs(physics.ySpeed) < 0.6) {
+      window.addEventListener("audiofadeout", () => {
+        audio.buffers.stage2?.stop();
+        audio.buffers.stage?.stop();
+      }, { once: true });
+
+      audio.fadeout();
+      audio.chords();
       physics.speed = 0;
       dialog.setText(theringText, 2);
+      dialog.delay = 200;
+      control_block = true;
+      window.removeEventListener("thering", thefirsttimering);
+      hintBase = "\n \n Tem algo desenhado por tras das cataratas... \n \n \n \n " +
+        "\n \n parecem dizer como passar a barreira do mundo... o que?!! \n \n \n \n \n " +
+        "\n deve ser uma brincadeira de maluco... \n \n pular por cima de tudo... haha loucura!"
+      hintText = hintBase;
     }
   }
 
@@ -275,7 +342,6 @@ function startGame() {
 
   // around the world event
   const aroundtheworld = () => {
-    window.removeEventListener("aroundtheworld", aroundtheworld);
     for (let i = 0; i < 17; i++) {
       level.collisions[i * level.nbTotalTilesX] = level.collisions[i * level.nbTotalTilesX + 1];
       level.data[i * level.nbTotalTilesX] = level.data[i * level.nbTotalTilesX + 1];
@@ -297,14 +363,12 @@ function startGame() {
   };
 
   const tricky = () => {
-    window.removeEventListener("tricky", tricky);
     window.removeEventListener("mermaid1", mermaid1);
     dialog.setText("\n \n Caramba!!! Esses estavam escondidos mesmo!!!!");
     // advancement!!
   };
 
   const morsecode = () => {
-    window.removeEventListener("morsecode", morsecode);
     dialog.setText("\n \n Sabia que eu devia ter aprendido codigo morse...");
     hintBase = "\n \n olha! mais um daqueles desenhos... \n \n \n \n \n \n " +
       "digo... dessa vez esta escrito mesmo: \n \n \n \ntodo anel que aparece pode ser pego...";
@@ -313,7 +377,6 @@ function startGame() {
   };
 
   const cataratacave = () => {
-    window.removeEventListener("cataratacave", cataratacave);
     window.removeEventListener("mermaid2", mermaid2);
     dialog.setText("\n \n Olha onde vieram parar os aneis levados pela correnteza...");
     // advancement!!
@@ -322,55 +385,81 @@ function startGame() {
   const dothebridge = () => {
     if (Math.abs(physics.speed) < 6 || Math.abs(physics.ySpeed) > 0.8) return;
 
-    window.removeEventListener("dothebridge", dothebridge);
     dialog.setText("\n \n Olha o que eu tambem sei fazer!!!");
     // advancement!!
   };
 
   const dotheloop = () => {
-    window.removeEventListener("dotheloop", dotheloop);
     dialog.setText("\n \n Olha o que eu sei fazer!!!");
     // advancement!!
   };
 
   const outborder = () => {
-    window.removeEventListener("outborder", outborder);
+    physics.speed = 0;
+    control_block = true;
     dialog.setText("\n Espera ai... era pra o mundo ter acabado! ou existem mais coisas para esse lado? \n \n \n \n \n " +
       "complicado andar sem enxergar nada... mas vamos seguir em frente!");
-    audio.stageBgm();
+    window.addEventListener("audiofadeout", () => {
+      audio.buffers.stage?.stop();
+    }, { once: true });
+    audio.fadeout();
+    audio.stage2Bgm();
     // advancement!!
   };
 
-  const thebreaking = ({ detail: { rings } }) => {
-    if (rings !== 208) return;
-    window.removeEventListener("ring", thebreaking);
-    window.addEventListener("thering", thefirsttimering);
-    physics.speed *= 0.0001;
-    audio.buffers.stage.stop();
-    dialog.setText("... \n \n \n \n \n \n \n ... \n \n \n \n \n \n Alguma coisa... \n \n \n \n \n \n \n estou esquecendo de alguma coisa importante...");
+  const thebreaking = () => {
+    physics.speed = 0;
+    control_block = true;
+    window.addEventListener("audiofadeout", () => {
+      audio.buffers.stage?.stop();
+      audio.buffers.stage2?.stop();
+    }, { once: true });
+    audio.fadeout();
+    dialog.setText("... \n \n \n \n \n \n \n ... \n \n \n \n \n \n Alguma coisa... \n \n \n \n \n \n \n" +
+      " estou esquecendo de alguma coisa importante... \n \n \n \n \n \n ... \n \n \n \n \n aquele anel...");
     hintBase = "\n \n Tem algo desenhado por tras das cataratas... \n \n \n \n " +
       "\n \n parecem dizer como passar a barreira do mundo... o que?!! \n \n \n \n \n " +
       "\n deve ser uma brincadeira de maluco... \n \n pular por cima de tudo... haha loucura!"
     hintText = hintBase;
+    window.removeEventListener("thering", thefirsttimering);
     // TODO: flash back
   };
 
-  const getthering = () => {
-    audio.buffers.stage.stop();
-    dialog.setText("\n \n agora eu me lembro... \n \n \n \n \n \n foi por isso que eu enfrentei o mundo todo... \n \n finalmente...", true);
+  const getthering = ({ detail: { isTrue } }) => {
+    window.addEventListener("audiofadeout", () => {
+      audio.buffers.stage?.stop();
+      audio.buffers.stage2?.stop();
+    }, { once: true });
+    audio.fadeout();
+    physics.speed = 0;
+    control_block = true;
+    dialog.setText("\n \n agora eu me lembro... \n \n \n \n \n \n foi por causa disso que eu corri todo esse tempo... \n \n \n \n \n " +
+      "tantas batalhas, \n tantas feridas... \n \n \n \n \n mas finalmente...", true);
+    window.addEventListener("dialogend", isTrue ? trueending : theend, { once: true });
   };
 
-  window.addEventListener("aroundtheworld", aroundtheworld);
-  window.addEventListener("tricky", tricky);
-  window.addEventListener("morsecode", morsecode);
-  window.addEventListener("cataratacave", cataratacave);
-  window.addEventListener("dothebridge", dothebridge);
-  window.addEventListener("dotheloop", dotheloop);
-  window.addEventListener("outborder", outborder);
-  window.addEventListener("ring", thebreaking);
-  window.addEventListener("getthering", getthering);
+  const mountainclimber = () => {
+    physics.speed = 0;
+    control_block = true;
+    dialog.setText("\n \n \n Acredito que recolhi tudo que estava a meu alcance... \n \n \n \n " +
+      "Preciso ir para um ponto mais alto para ver se enxergo algo que deixei passar... \n \n \n \n \n \n " +
+      "Alguma coisa...");
+  }
+
+  window.addEventListener("aroundtheworld", aroundtheworld, { once: true });
+  window.addEventListener("tricky", tricky, { once: true });
+  window.addEventListener("morsecode", morsecode, { once: true });
+  window.addEventListener("cataratacave", cataratacave, { once: true });
+  window.addEventListener("dothebridge", dothebridge, { once: true });
+  window.addEventListener("dotheloop", dotheloop, { once: true });
+  window.addEventListener("outborder", outborder, { once: true });
+  window.addEventListener("mountainclimber", mountainclimber, { once: true });
+  window.addEventListener("getthering", getthering, { once: true });
   window.addEventListener("mermaid1", mermaid1);
   window.addEventListener("mermaid2", mermaid2);
+  window.addEventListener("dialogend", () => { control_block = false; });
+  window.addEventListener("thebreaking", thebreaking, { once: true });
+  window.addEventListener("thering", thefirsttimering);
 }
 
 let lastTimestamp = 90000000;
@@ -392,10 +481,12 @@ function physicsLoop(timestamp) {
 
 function paintGame(timestamp) {
   // find out the step for the physics sim
+  audio.updateFilter(timestamp, physics.y);
   backgrounds.paint(context2d, physics.x);
-  level.draw(context2d, resources.images['tileset'], physics.x, physics.y, dialog.visible);
+  level.draw(context2d, timestamp, resources.images['tileset'], physics.x, physics.y, dialog.visible);
   dialog.print(context2d, resources.images['tileset']);
   sonic.draw(context2d, physics.x, physics.y);
+  if (rose) rose.draw(context2d, physics.x - 7966 + 4 * rose.countdown);
   foreground.forEach(({ scale, draw }) => {
     context2d.save();
     scale();
@@ -413,6 +504,7 @@ audio.load()
   .then(() => resources.load())
   .then(() => {
     titleScreen = new TitleScreen();
+    rose = new Rose();
     resizeScreen();
     paintTitle();
     window.addEventListener("keydown", interactToStart, { once: true });

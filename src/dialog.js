@@ -11,13 +11,16 @@ function Dialog(map, tiles) {
   this.h = 10;
   this.yOffset = 0;
 
-  this.text = { x: 36, y: 36 + 7, h: 6 * 11, w: 31 * 8 };
+  this.text = { x: 36, y: 36 + 7, h: 6 * 11, w: 31 * 8, lines: [], remaining: [] };
   this.continue = { x: 16 * this.tileSize + 8, y: 7 * this.tileSize - 2 };
   this.ring = { x: 17 * this.tileSize, y: 6 * this.tileSize };
 
   this.visible = false;
   this.printNext = false;
   this.isMenu = false;
+
+  this.delay = 70;
+  this.waiting = null;
 }
 
 Dialog.prototype.hasRing = function() {
@@ -26,8 +29,10 @@ Dialog.prototype.hasRing = function() {
 
 Dialog.prototype.draw = function(context, image, text) {
 
-  if (this.printNext && !this.text.remaining) {
+  if (this.printNext && !this.text.remaining.length) {
     this.visible = false;
+    this.text.text = null;
+    window.dispatchEvent(new Event("dialogend"));
     return;
   }
 
@@ -70,34 +75,45 @@ Dialog.prototype.draw = function(context, image, text) {
   this.text.text = text;
 
   // get lines to print
-  const textWrapper = isRerender ? this.text.lines : (this.text.remaining ?? text.split(" "));
+  const textWrapper = isRerender
+    ? [...this.text.lines, ...this.text.remaining]
+    : (
+      this.printNext
+        ? this.text.remaining
+        : text.split(" ")
+    );
+
+  const processedLines = this.printNext ? 0 : this.text.lines.length;
   this.text.lines = [];
 
   // reset text.remaining
-  if (this.printNext) this.text.remaining = null;
+  // if (this.printNext) this.text.remaining = [];
 
   // wrap words
-  for (var y = 0; y < (this.text.h / 11) && textWrapper.length; y++) {
-    let line = textWrapper.shift();
+  for (var y = 0; y < this.text.h && textWrapper.length; y += 11) {
+    let line = processedLines > this.text.lines.length ? textWrapper.shift() : "";
 
-    // increase line size by adding words to it
-    while (!isRerender && textWrapper.length && line !== "\n"
+    if (!this.waiting && textWrapper.length && line !== "\n"
       && context.measureText(`${line} ${textWrapper[0]}`)?.width < this.text.w) {
-      if (textWrapper[0] === "\n") {
-        textWrapper.shift();
-        break;
+      // increase line size by adding words to it
+
+      this.waiting = window.setTimeout(() => { this.waiting = null }, this.delay);
+      const word = textWrapper.shift();
+      if (word === "\n") {
+        line += "                                                     "; // make it too big
+      } else {
+        line = `${line} ${word}`;
       }
-      line = `${line} ${textWrapper.shift()}`;
     }
 
-    this.text.lines.push(line);
-    context.fillText(line, this.text.x, this.text.y + y * 11 + this.yOffset);
+    if (line.length) this.text.lines.push(line);
+    context.fillText(line, this.text.x, this.text.y + this.yOffset + y);
   }
 
-  if (textWrapper.length) this.text.remaining = textWrapper;
+  this.text.remaining = textWrapper;
 
   context.textAlign = "right";
-  context.fillText(this.text.remaining ? "... Pular" : "Pular", this.continue.x, this.continue.y + this.yOffset);
+  context.fillText(this.text.remaining.length ? "... Pular" : "Pular", this.continue.x, this.continue.y + this.yOffset);
   context.restore();
 
   // draw ring
@@ -111,12 +127,15 @@ Dialog.prototype.print = function(context, image) {
 }
 
 Dialog.prototype.next = function() {
-  this.printNext = true;
+  if (this.text.lines.length === 6 || this.text.remaining.length === 0)
+    this.printNext = true;
 }
 
 Dialog.prototype.setText = function(text, bottom = false) {
   this.newText = text;
+  this.text.lines = [];
   this.visible = true;
   this.yOffset = bottom ? 6 : 0;
   this.yOffset *= this.tileSize;
+  this.delay = 70;
 }

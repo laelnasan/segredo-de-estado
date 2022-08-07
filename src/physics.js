@@ -85,12 +85,14 @@ Physics.prototype.canMove = function(right, isDialog) {
     if (this.speed > 5.5) {
       this.ySpeed = -5.4;
       this.speed = 6.2;
+      audio.loop();
     }
     return true;
   } else if (collisionValueX === 179) {
     if (this.speed < -5.5) {
       this.ySpeed = -5.4;
       this.speed = -6.2;
+      audio.loop();
     }
     return true;
   }
