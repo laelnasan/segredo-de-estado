@@ -18,7 +18,7 @@ function Level(map) {
   this.watterRun = 1;
   this.collectedRings = 0; // adjusting variable
   this.maxRings = 278 + this.collectedRings;
-  this.continueRings = 165 + this.collectedRings;
+  this.continueRings = 170 + this.collectedRings;
   this.mermaid1Rings = 130 + this.collectedRings;
   this.mermaid2Rings = 100 + this.collectedRings;
   this.trueending = false;
@@ -245,7 +245,7 @@ Level.prototype.manageRingCollision = function(x, y, isDialog) {
   if (this.artifacts[tilePositionInData] === 285) { // Collision
     this.artifacts[tilePositionInData] = -1;
     this.collectedRings++;
-    if (this.collectedRings == 190)
+    if (this.collectedRings == this.continueRings)
       window.dispatchEvent(new Event('mountainclimber'));
     if (this.collectedRings == 208)
       window.dispatchEvent(new Event('thebreaking'));
