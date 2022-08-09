@@ -18,7 +18,7 @@ function Level(map) {
   this.watterRun = 1;
   this.collectedRings = 0; // adjusting variable
   this.maxRings = 278 + this.collectedRings;
-  this.continueRings = 170 + this.collectedRings;
+  this.continueRings = 180 + this.collectedRings;
   this.mermaid1Rings = 130 + this.collectedRings;
   this.mermaid2Rings = 100 + this.collectedRings;
   this.trueending = false;
@@ -77,7 +77,9 @@ Level.prototype.draw = function(context, timestamp, image, posXCharacter, posYCh
       };
 
       // bind arguments to a new function
-      const scale = context.scale.bind(context, flip.x, flip.y);
+      let scale = context.scale.bind(context, flip.x, flip.y);
+      if (tileNum > 215 && tileNum < 220) scale = () => { context.globalAlpha = 0.85; };
+
       const draw = context.drawImage.bind(context, image,
         (tilePosX * this.tileSize * 2),
         (tilePosY * this.tileSize),

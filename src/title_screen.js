@@ -57,8 +57,9 @@ class TitleScreen {
       renderingSequence.push(() => {
         // console.log("press key");
         context.font = "15px sega";
-        context.fillText("Press any key to Start...", 160, 110);
-        rose.draw(context)
+        context.fillText("Press any key to " +
+          ((localStorage.getItem("as6df41s461a641*1a641a641*64a5cs5") === 'true') ? "re" : "") +
+          ((localStorage.getItem("as6df41s461a641*1a641a641*64a5cs5") === 'false') ? "continue" : "start..."), 160, 110);
       });
     } else {
       animation++;

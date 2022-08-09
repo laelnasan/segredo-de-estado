@@ -217,7 +217,7 @@ function startGame() {
   window.setTimeout(() => {
     physics.speed = 0;
     control_block = true;
-    dialog.setText("\n Puxa vida, bubu! o dr eggman roubou todos os meus aneis de poder! " +
+    dialog.setText("\n \n Puxa vida, bubu! o dr eggman me deu uma paulada nas ideias e roubou todos os meus aneis de poder! \n \n \n \n \n" +
       "ainda bem que ele deixou cair alguns pelo caminho... \n \n \n \n " +
       "preciso coletar todos os aneis antes que ele tenha tempo de voltar!");
   }, 2000);
@@ -229,20 +229,23 @@ function startGame() {
     if (!dialog.visible && physics.speed === 0 && Math.abs(physics.ySpeed) < 0.6) {
       window.removeEventListener("ring", mountainclimber);
       dialog.setText(continueDialogText);
-      if (continueDialogText.length > 24) continueDialogText = "\n ou talvez... \n \n \n";
-      else continueDialogText = "\n ou talvez... \n \n               ";
+      if (continueDialogText.length > 31) continueDialogText = "\n \n \n ou talvez... \n \n \n";
+      else continueDialogText = "\n \n \n ou talvez... \n \n               ";
     }
   });
 
   const theend = () => {
     audio.ending();
-
+    backgrounds.ending = true;
     control_block = true;
     physics.speed = 1.5;
     physics.applyFriction = () => { };
+    // just in case
+    window.removeEventListener("mermaid1", mermaid1);
+
     window.setTimeout(() => { physics.jump(); audio.jump(); physics.speed = 0.7; }, 76500)
     window.setTimeout(() => {
-      dialog.setText("\n \n \n ... \n \n \n \n \n \n tenho uma pergunta para te fazer...");
+      dialog.setText("\n \n \n bubu... \n \n \n \n \n \n tenho uma pergunta para te fazer...");
       window.addEventListener("dialogend", () => { level.fadeout(); }, { once: true });
     }, 112000);
     /* ending animation */
@@ -266,8 +269,10 @@ function startGame() {
         physics.speed = 1.5;
         physics.jump();
         physics.applyFriction = () => { };
+        // just in case
+        window.removeEventListener("mermaid1", mermaid1);
         window.setTimeout(() => { physics.jump(); audio.jump(); physics.speed = 0.7; }, 76500)
-        window.setTimeout(() => { rose = new Rose(); rose.countdown = 64 }, 95000)
+        window.setTimeout(() => { rose = new Rose(); rose.countdown = 32 }, 100000)
         window.addEventListener("hug", () => {
           rose.animate("huging");
           dialog.setText("\n \n \n infinito...");
@@ -297,12 +302,13 @@ function startGame() {
     physics.x += level.endLevel;
     physics.x %= level.endLevel;
     physics.speed = 0;
-    dialog.setText("Dei a volta ao mundo!!! de novo...");
+    dialog.setText("\n \n \n Dei a volta ao mundo!!! de novo...");
     control_block = true;
   }
 
   const theringText = "\n \n ... ... ... ... Esse anel... parece diferente dos outros... \n \n \n \n \n " +
-    " um tanto quanto etereo... por que passo por ele sem conseguir segurar??? \n \n \n \n" +
+    " um tanto quanto etereo... \n \n \n \n \n \n " +
+    " por que passo por ele sem conseguir segurar??? \n \n \n \n" +
     " ... \n \n \n \n \n \n \n \n e por que sinto esse aperto no peito?...";
   const thefirsttimering = () => {
     if (physics.speed < 0.05 && Math.abs(physics.ySpeed) < 0.6) {
@@ -333,7 +339,7 @@ function startGame() {
 
   const mermaid2 = () => {
     if (!dialog.visible && physics.speed < 0.05 && Math.abs(physics.ySpeed) < 0.6) {
-      dialog.setText("... \n \n \n \n \n \n tem uma caverna a esquerda...");
+      dialog.setText("\n \n \n ... \n \n \n \n \n \n tem uma caverna a esquerda...");
     }
   }
 
@@ -441,7 +447,7 @@ function startGame() {
   const mountainclimber = () => {
     physics.speed = 0;
     control_block = true;
-    dialog.setText("\n \n \n Acredito que recolhi tudo que estava a meu alcance... \n \n \n \n " +
+    dialog.setText("\n \n \n Acho que recolhi tudo que eu podia... \n \n \n \n " +
       "Preciso ir para um ponto mais alto para ver se enxergo algo que deixei passar... \n \n \n \n \n \n " +
       "Alguma coisa...");
   }
@@ -486,7 +492,7 @@ function paintGame(timestamp) {
   level.draw(context2d, timestamp, resources.images['tileset'], physics.x, physics.y, dialog.visible);
   dialog.print(context2d, resources.images['tileset']);
   sonic.draw(context2d, physics.x, physics.y);
-  if (rose) rose.draw(context2d, physics.x - 7966 + 4 * rose.countdown);
+  if (rose) rose.draw(context2d, physics.x - 7966 + 8 * rose.countdown);
   foreground.forEach(({ scale, draw }) => {
     context2d.save();
     scale();
@@ -504,7 +510,6 @@ audio.load()
   .then(() => resources.load())
   .then(() => {
     titleScreen = new TitleScreen();
-    rose = new Rose();
     resizeScreen();
     paintTitle();
     window.addEventListener("keydown", interactToStart, { once: true });

@@ -20,6 +20,17 @@ function Background() {
     scrollValue: 0.8,
     y: 20
   };
+  this.text = [
+    "",
+    "Essa é a história do andarilho errante",
+    "que, em peregrinação, avistou a princesa.",
+    "Os céus arranjaram o encontro na terra,",
+    "o tempo, ardiloso, os separou no espaço...",
+    "O coração, temeroso, por vezes se cobriu de trevas,",
+    "mas tempo não vence o infinito...",
+    "",
+    "",
+  ];
 
 }
 
@@ -34,19 +45,22 @@ Background.prototype.paint = function(context, posXCharacter) {
 
   for (var i = 0; i < this.backgrounds.length; i++) {
 
-    // Décallage de chaque image, le modulo permet de boucler quand on a scrollé la taille du canvas
     var offset = scrolledValue * this.backgrounds[i].scrollValue % this.canvasWidth;
+    var index = Math.floor(scrolledValue * this.backgrounds[i].scrollValue) >> 8;
+
     context.drawImage(this.backgrounds[i].background, offset, this.backgrounds[i].y);
+    if (i == 2 && this.ending) {
 
-    // Pour les calques qui bougent
+      context.textAlign = "left";
+      context.fillStyle = "#FFF0F0";
+      context.font = "bold italic 16px verdana";
+
+      context.fillText("                                                                               " +
+        this.text[Math.abs(Math.floor((index + 2) / 4))], offset + ((index >> 1) % 2) * this.canvasWidth, 80);
+    }
+
     if (this.backgrounds[i].scrollValue > 0) {
-
-      // Si on n'a pas fini un cycle total, affiche une image à côté
-      if (offset > 0) {
-        context.drawImage(this.backgrounds[i].background, offset - this.canvasWidth, this.backgrounds[i].y);
-      } else if (offset < 0) {
-        context.drawImage(this.backgrounds[i].background, offset + this.canvasWidth, this.backgrounds[i].y);
-      }
+      context.drawImage(this.backgrounds[i].background, offset + this.canvasWidth, this.backgrounds[i].y);
     }
   }
 };

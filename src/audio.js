@@ -114,11 +114,11 @@
   };
 
   Audio.prototype.ending = function() {
-    this.play("ending", false);
+    this.play("ending", false, null, null, () => { localStorage.setItem("as6df41s461a641*1a641a641*64a5cs5", false); });
   };
 
   Audio.prototype.trueending = function() {
-    this.play("trueending", false);
+    this.play("trueending", false, null, null, () => { localStorage.setItem("as6df41s461a641*1a641a641*64a5cs5", true); });
   };
 
   Audio.prototype.loop = function() {
@@ -150,9 +150,9 @@
       this.jack = this.audioContext.createGain();
       this.jack.connect(this.state === "land" ? this.audioContext.destination : this.filter);
     }
-    if (this.fadeoutJack.gain.value > 0.05) {
-      this.fadeoutJack.gain.value -= 0.05;
-      window.setTimeout(this.fadeout.bind(this), 100);
+    if (this.fadeoutJack.gain.value > 0.04) {
+      this.fadeoutJack.gain.value -= 0.04;
+      window.setTimeout(this.fadeout.bind(this), 200);
     } else {
       this.fadeoutJack.disconnect();
       this.fadeoutJack = null;
