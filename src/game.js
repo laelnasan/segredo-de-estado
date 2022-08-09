@@ -384,19 +384,21 @@ function startGame() {
 
   const cataratacave = () => {
     window.removeEventListener("mermaid2", mermaid2);
-    dialog.setText("\n \n Olha onde vieram parar os aneis levados pela correnteza...");
+    control_block = true;
+    dialog.setText("\n \n Olha onde vieram parar os aneis levados pela correnteza... \n \n \n \n \n " +
+      "imagino se existem outros lugares onde as moedas tenham caido na agua...");
     // advancement!!
   };
 
   const dothebridge = () => {
     if (Math.abs(physics.speed) < 6 || Math.abs(physics.ySpeed) > 0.8) return;
 
-    dialog.setText("\n \n Olha o que eu tambem sei fazer!!!");
+    dialog.setText("\n \n isso me deixa enjoado :(");
     // advancement!!
   };
 
   const dotheloop = () => {
-    dialog.setText("\n \n Olha o que eu sei fazer!!!");
+    dialog.setText("\n \n Olha o que eu sei fazer!");
     // advancement!!
   };
 
