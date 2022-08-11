@@ -118,7 +118,7 @@ function interactToStart() {
 
 // joystick
 const joy = new JoyStick("joyDiv", {}, ({ cardinalDirection }) => {
-  if (!A && cardinalDirection.match(/N/) && !physics.isInAir(!dialog.yOffset && dialog.visible)) {
+  if (!A && cardinalDirection === "N" && !physics.isInAir(!dialog.yOffset && dialog.visible)) {
     joy_jump = true;
   }
   if (cardinalDirection.match(/W/)) {
@@ -246,7 +246,7 @@ function startGame() {
     window.setTimeout(() => { physics.jump(); audio.jump(); physics.speed = 0.7; }, 76500)
     window.setTimeout(() => {
       dialog.setText("\n \n \n bubu... \n \n \n \n \n \n tenho uma pergunta para te fazer...");
-      window.addEventListener("dialogend", () => { level.fadeout(); }, { once: true });
+      window.addEventListener("dialogend", () => { level.fadeout(); control_block = true; }, { once: true });
     }, 112000);
     /* ending animation */
   };
@@ -277,7 +277,7 @@ function startGame() {
           rose.animate("huging");
           dialog.setText("\n \n \n infinito...");
           level.trueending = true;
-          window.addEventListener("dialogend", () => level.fadeout(), { once: true });
+          window.addEventListener("dialogend", () => { level.fadeout(); control_block = true; }, { once: true });
         }, { once: true });
       };
     }
