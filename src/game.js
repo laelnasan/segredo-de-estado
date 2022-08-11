@@ -301,9 +301,7 @@ function startGame() {
     physics.x %= level.endLevel;
     physics.x += level.endLevel;
     physics.x %= level.endLevel;
-    physics.speed = 0;
     dialog.setText("\n \n \n Dei a volta ao mundo!!! de novo...");
-    control_block = true;
   }
 
   const theringText = "\n \n ... ... ... ... Esse anel... parece diferente dos outros... \n \n \n \n \n " +
@@ -365,7 +363,7 @@ function startGame() {
       "parece que uma caverna se abriu mais a frente... \n \n \n \n " +
       "talvez seja melhor investigar pelo outro lado para eu poder ver onde vai dar!";
     hintText = hintBase;
-    window.addEventListener("aroundtheworld", warp);
+    window.addEventListener("outborder", warp);
   };
 
   const tricky = () => {
