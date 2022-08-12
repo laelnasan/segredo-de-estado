@@ -219,7 +219,8 @@ function startGame() {
     control_block = true;
     dialog.setText("\n \n Puxa vida, bubu! o dr eggman me deu uma paulada nas ideias e roubou todos os meus aneis de poder! \n \n \n \n \n" +
       "ainda bem que ele deixou cair alguns pelo caminho... \n \n \n \n " +
-      "preciso coletar todos os aneis antes que ele tenha tempo de voltar!");
+      "preciso coletar todos os aneis antes que ele tenha tempo de voltar! \n \n \n \n \n \n \n \n \n \n " +
+      "<<< --------- Objetivo: --------- >>> \n - coletar todos os aneis.");
   }, 2000);
 
   // continuation dialog
@@ -449,7 +450,8 @@ function startGame() {
     control_block = true;
     dialog.setText("\n \n \n Acho que recolhi tudo que eu podia... \n \n \n \n " +
       "Preciso ir para um ponto mais alto para ver se enxergo algo que deixei passar... \n \n \n \n \n \n " +
-      "Alguma coisa...");
+      "Alguma coisa... \n \n \n \n \n \n \n \n \n \n " +
+      "<<< ------ Novo Objetivo: ------ >>> \n - Subir em um lugar alto.");
   }
 
   window.addEventListener("aroundtheworld", aroundtheworld, { once: true });
